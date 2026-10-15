@@ -2,48 +2,70 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0d0d12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Волчий Гид">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Волчий Гид — До 1 Мая</title>
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D0%92%D0%BE%D0%BB%D1%87%D0%B8%D0%B9%20%D0%93%D0%B8%D0%B4%22%2C%22short_name%22%3A%22%D0%92%D0%BE%D0%BB%D0%BA%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230d0d12%22%2C%22theme_color%22%3A%22%230d0d12%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22%D0%92%D0%BE%D0%BB%D0%BA.jpg%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fjpeg%22%7D%5D%7D">
+<link rel="apple-touch-icon" href="Волк.jpg">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    overscroll-behavior-y: contain;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
   body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Segoe UI', -apple-system, system-ui, sans-serif;
     background: #0d0d12;
     color: #e8e8f0;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
-    padding: 16px;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
   }
   .app {
     width: 100%;
     max-width: 480px;
   }
 
-  /* ВОЛК */
+  /* ВОЛК — реальное фото */
   .wolf {
     width: 100%;
+    aspect-ratio: 1 / 1;
     border-radius: 20px;
     overflow: hidden;
     border: 2px solid #2a2a3a;
-    box-shadow: 0 0 40px rgba(120, 80, 255, 0.15);
-    margin-bottom: 16px;
+    box-shadow: 0 0 40px rgba(120, 80, 255, 0.2);
+    margin-bottom: 14px;
     background: #14141c;
     position: relative;
   }
-  .wolf svg { display: block; width: 100%; height: auto; }
+  .wolf img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
   .wolf-caption {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 10px 14px;
-    background: linear-gradient(transparent, rgba(0,0,0,0.85));
-    font-size: 13px;
+    bottom: 0; left: 0; right: 0;
+    padding: 12px 16px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    font-size: 14px;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: #b8a8ff;
     font-weight: 600;
+    text-align: center;
   }
 
   /* ОБРАТНЫЙ ОТСЧЁТ */
@@ -51,9 +73,9 @@
     background: linear-gradient(135deg, #1a1a2e, #16162a);
     border: 1px solid #2a2a45;
     border-radius: 18px;
-    padding: 20px;
+    padding: 18px 12px;
     text-align: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   .countdown-label {
     font-size: 12px;
@@ -63,19 +85,18 @@
     margin-bottom: 12px;
   }
   .countdown-timer {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
   .time-block {
     background: #0f0f1a;
     border: 1px solid #2a2a45;
     border-radius: 12px;
-    padding: 12px 8px;
-    min-width: 68px;
+    padding: 10px 4px;
   }
   .time-num {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 800;
     color: #c4b5ff;
     font-variant-numeric: tabular-nums;
@@ -101,49 +122,64 @@
     border: 1px solid #2a2a45;
     border-radius: 18px;
     padding: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
   .today-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 14px;
+    gap: 8px;
   }
-  .today-title { font-size: 14px; color: #9a9ab8; letter-spacing: 1px; text-transform: uppercase; }
-  .today-date { font-size: 13px; color: #6a6a8a; }
+  .today-title {
+    font-size: 13px;
+    color: #9a9ab8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .today-date {
+    font-size: 12px;
+    color: #6a6a8a;
+    text-align: right;
+  }
 
+  /* СТАТЫ С КНОПКАМИ */
   .stats-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 6px;
+    margin-bottom: 8px;
   }
   .stat {
     background: #0f0f1a;
     border: 1px solid #2a2a45;
     border-radius: 12px;
-    padding: 10px 4px;
+    padding: 10px 3px 8px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
   }
   .stat-letter {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 800;
     color: #c4b5ff;
-    margin-bottom: 4px;
+    line-height: 1;
   }
   .stat-val {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     color: #fff;
     font-variant-numeric: tabular-nums;
+    line-height: 1;
   }
-  .stat-max { font-size: 10px; color: #5a5a7a; }
+  .stat-max { font-size: 9px; color: #5a5a7a; }
   .stat-dot {
     width: 100%;
     height: 4px;
     background: #1f1f35;
     border-radius: 2px;
-    margin-top: 6px;
     overflow: hidden;
   }
   .stat-dot-fill {
@@ -152,31 +188,34 @@
     width: 0%;
     transition: width 0.4s;
   }
-
-  .btn-add {
+  .stat-btn {
     width: 100%;
-    padding: 14px;
+    margin-top: 4px;
+    padding: 10px 0;
+    min-height: 40px;
     background: linear-gradient(135deg, #6d4aff, #9a7cff);
     border: none;
-    border-radius: 12px;
+    border-radius: 9px;
     color: #fff;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
-    letter-spacing: 1px;
-    transition: 0.2s;
+    transition: transform 0.1s, filter 0.15s;
+    line-height: 1;
+    touch-action: manipulation;
   }
-  .btn-add:hover { filter: brightness(1.15); }
-  .btn-add:disabled {
+  .stat-btn:active:not(:disabled) {
+    transform: scale(0.93);
+    filter: brightness(1.2);
+  }
+  .stat-btn:disabled {
     background: #2a2a3f;
     color: #5a5a7a;
     cursor: not-allowed;
   }
 
   /* ОЦЕНКА И ЦИТАТА */
-  .row-block {
-    margin-top: 16px;
-  }
+  .row-block { margin-top: 16px; }
   .row-label {
     font-size: 12px;
     letter-spacing: 1px;
@@ -185,48 +224,54 @@
     margin-bottom: 8px;
   }
   .rating {
-    display: flex;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
   }
   .star {
-    flex: 1;
-    padding: 10px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background: #0f0f1a;
     border: 1px solid #2a2a45;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 20px;
+    border-radius: 12px;
+    font-size: 26px;
     cursor: pointer;
-    transition: 0.2s;
-    user-select: none;
+    transition: transform 0.1s, background 0.2s, border-color 0.2s;
+    touch-action: manipulation;
   }
-  .star:hover { border-color: #7c5cff; }
+  .star:active { transform: scale(0.9); }
   .star.active {
     background: linear-gradient(135deg, #6d4aff, #9a7cff);
     border-color: #9a7cff;
-    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(124, 92, 255, 0.5);
   }
   .quote-input {
     width: 100%;
     background: #0f0f1a;
     border: 1px solid #2a2a45;
-    border-radius: 10px;
-    padding: 12px;
+    border-radius: 12px;
+    padding: 14px;
     color: #e8e8f0;
-    font-size: 14px;
+    font-size: 16px; /* 16px — чтоб iOS не зумил при фокусе */
     resize: vertical;
-    min-height: 60px;
+    min-height: 80px;
     font-family: inherit;
+    -webkit-user-select: text;
+    user-select: text;
   }
-  .quote-input:focus { outline: none; border-color: #7c5cff; }
+  .quote-input:focus {
+    outline: none;
+    border-color: #7c5cff;
+    box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.15);
+  }
   .quote-input::placeholder { color: #4a4a6a; }
 
   /* ИСТОРИЯ */
-  .history {
-    margin-top: 16px;
-  }
+  .history { margin-top: 16px; }
   .history-title {
-    font-size: 14px;
+    font-size: 13px;
     color: #9a9ab8;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -245,13 +290,17 @@
     align-items: center;
     margin-bottom: 8px;
   }
-  .day-card-date { font-size: 13px; color: #c4b5ff; font-weight: 600; }
-  .day-card-rate { font-size: 14px; }
+  .day-card-date {
+    font-size: 13px;
+    color: #c4b5ff;
+    font-weight: 600;
+  }
+  .day-card-rate { font-size: 13px; }
   .day-card-stats {
     display: flex;
-    gap: 6px;
+    gap: 5px;
     flex-wrap: wrap;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .mini-stat {
     font-size: 11px;
@@ -267,11 +316,19 @@
     font-style: italic;
     border-left: 2px solid #7c5cff;
     padding-left: 8px;
+    -webkit-user-select: text;
+    user-select: text;
   }
-  .empty { text-align: center; color: #5a5a7a; font-size: 13px; padding: 20px; }
+  .empty {
+    text-align: center;
+    color: #5a5a7a;
+    font-size: 13px;
+    padding: 20px;
+  }
+
   .toast {
     position: fixed;
-    bottom: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
     left: 50%;
     transform: translateX(-50%) translateY(100px);
     background: #6d4aff;
@@ -282,87 +339,26 @@
     font-weight: 600;
     transition: 0.3s;
     z-index: 100;
-    box-shadow: 0 10px 30px rgba(109, 74, 255, 0.4);
+    box-shadow: 0 10px 30px rgba(109, 74, 255, 0.5);
+    pointer-events: none;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* маленькие экраны */
+  @media (max-width: 360px) {
+    .stat-letter { font-size: 15px; }
+    .stat-val { font-size: 13px; }
+    .time-num { font-size: 20px; }
+    .star { font-size: 22px; }
+  }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- ЭБАЛО ВОЛКА -->
+  <!-- ЭБАЛО ВОЛКА (фото) -->
   <div class="wolf">
-    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="furGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#3a3a52"/>
-          <stop offset="100%" stop-color="#1a1a28"/>
-        </linearGradient>
-        <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#1a1a2e"/>
-          <stop offset="100%" stop-color="#0d0d18"/>
-        </linearGradient>
-        <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#ffd45c"/>
-          <stop offset="60%" stop-color="#ff9f1c"/>
-          <stop offset="100%" stop-color="#c46a00"/>
-        </radialGradient>
-      </defs>
-      <rect width="400" height="300" fill="url(#bgGrad)"/>
-      <!-- Луна -->
-      <circle cx="320" cy="60" r="35" fill="#2a2a45" opacity="0.6"/>
-      <circle cx="310" cy="55" r="35" fill="#1a1a2e"/>
-
-      <!-- Уши -->
-      <polygon points="100,110 130,40 175,100" fill="#2a2a3f"/>
-      <polygon points="300,110 270,40 225,100" fill="#2a2a3f"/>
-      <polygon points="108,105 132,55 168,98" fill="#1f1f30"/>
-      <polygon points="292,105 268,55 232,98" fill="#1f1f30"/>
-      <polygon points="115,100 130,68 158,96" fill="#3a2a3a"/>
-      <polygon points="285,100 270,68 242,96" fill="#3a2a3a"/>
-
-      <!-- Голова -->
-      <ellipse cx="200" cy="160" rx="115" ry="105" fill="url(#furGrad)"/>
-      <!-- Мех на щеках -->
-      <path d="M90,150 Q75,175 95,200 Q85,180 105,190 Z" fill="#2a2a3f"/>
-      <path d="M310,150 Q325,175 305,200 Q315,180 295,190 Z" fill="#2a2a3f"/>
-
-      <!-- Морда (светлая часть) -->
-      <ellipse cx="200" cy="205" rx="70" ry="60" fill="#4a4a62"/>
-      <ellipse cx="200" cy="215" rx="55" ry="45" fill="#5a5a72"/>
-
-      <!-- Глаза -->
-      <ellipse cx="155" cy="150" rx="22" ry="18" fill="#0a0a10"/>
-      <ellipse cx="245" cy="150" rx="22" ry="18" fill="#0a0a10"/>
-      <ellipse cx="155" cy="150" rx="16" ry="13" fill="url(#eyeGlow)"/>
-      <ellipse cx="245" cy="150" rx="16" ry="13" fill="url(#eyeGlow)"/>
-      <ellipse cx="155" cy="150" rx="6" ry="11" fill="#0a0a10"/>
-      <ellipse cx="245" cy="150" rx="6" ry="11" fill="#0a0a10"/>
-      <circle cx="160" cy="145" r="3" fill="#fff" opacity="0.9"/>
-      <circle cx="250" cy="145" r="3" fill="#fff" opacity="0.9"/>
-
-      <!-- Брови -->
-      <path d="M125,125 Q155,115 185,128" stroke="#1a1a28" stroke-width="6" fill="none" stroke-linecap="round"/>
-      <path d="M275,125 Q245,115 215,128" stroke="#1a1a28" stroke-width="6" fill="none" stroke-linecap="round"/>
-
-      <!-- Нос -->
-      <ellipse cx="200" cy="200" rx="18" ry="13" fill="#0a0a10"/>
-      <ellipse cx="195" cy="197" rx="5" ry="3" fill="#3a3a52"/>
-      <ellipse cx="205" cy="197" rx="5" ry="3" fill="#3a3a52"/>
-
-      <!-- Рот / пасть -->
-      <path d="M200,213 L200,235" stroke="#0a0a10" stroke-width="3"/>
-      <path d="M200,235 Q180,250 165,240" stroke="#0a0a10" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <path d="M200,235 Q220,250 235,240" stroke="#0a0a10" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <!-- Клыки -->
-      <polygon points="175,238 180,255 185,238" fill="#f0f0f5"/>
-      <polygon points="215,238 220,255 225,238" fill="#f0f0f5"/>
-      <!-- Язык -->
-      <path d="M190,245 Q200,260 210,245 Q200,250 190,245 Z" fill="#c45c6a"/>
-
-      <!-- Шерсть на лбу -->
-      <path d="M185,95 Q200,85 215,95 Q205,100 200,92 Q195,100 185,95 Z" fill="#2a2a3f"/>
-    </svg>
+    <img src="Волк.jpg" alt="Волк">
     <div class="wolf-caption">🐺 Волчий Гид</div>
   </div>
 
@@ -385,11 +381,7 @@
       <div class="today-date" id="todayDate"></div>
     </div>
 
-    <div class="stats-grid" id="statsGrid">
-      <!-- генерируется JS -->
-    </div>
-
-    <button class="btn-add" id="btnAdd">+1 КО ВСЕМ ПОКАЗАТЕЛЯМ ЗА ДЕНЬ</button>
+    <div class="stats-grid" id="statsGrid"></div>
 
     <!-- ОЦЕНКА ДНЯ -->
     <div class="row-block">
@@ -433,9 +425,18 @@ function loadState() {
   } catch (e) {}
   return {
     stats: { К: 0, Н: 0, П: 0, Д: 0, Ч: 0 },
-    days: {}, // date -> { added: true, rating: 0, quote: '', stats: {...} }
+    days: {},
   };
 }
+
+// миграция старого формата ("added: true/false" -> "added: {К:true,...}")
+Object.values(state.days || {}).forEach(rec => {
+  if (rec.added === true) {
+    rec.added = { К:true, Н:true, П:true, Д:true, Ч:true };
+  } else if (rec.added === false || !rec.added) {
+    rec.added = {};
+  }
+});
 
 function saveState() {
   localStorage.setItem(STORAGE, JSON.stringify(state));
@@ -451,11 +452,15 @@ function todayRu() {
   return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+function haptic(ms = 15) {
+  if (navigator.vibrate) navigator.vibrate(ms);
+}
+
 /* ===== ОБРАТНЫЙ ОТСЧЁТ ===== */
 function updateCountdown() {
   const now = new Date();
   let year = now.getFullYear();
-  let target = new Date(year, 4, 1); // 1 мая
+  let target = new Date(year, 4, 1);
   if (now > target) target = new Date(year + 1, 4, 1);
 
   const diff = target - now;
@@ -472,26 +477,46 @@ function updateCountdown() {
 
 /* ===== ПАНЕЛЬ ПОКАЗАТЕЛЕЙ ===== */
 function renderStats() {
+  const rec = getTodayRecord();
   const grid = document.getElementById('statsGrid');
   grid.innerHTML = KEYS.map(k => {
     const v = state.stats[k];
-    const pct = v; // 0-100
+    const added = !!rec.added[k];
     return `
       <div class="stat">
         <div class="stat-letter">${k}</div>
         <div class="stat-val">${v}<span class="stat-max">/100</span></div>
-        <div class="stat-dot"><div class="stat-dot-fill" style="width:${pct}%"></div></div>
+        <div class="stat-dot"><div class="stat-dot-fill" style="width:${v}%"></div></div>
+        <button class="stat-btn" data-key="${k}" ${added ? 'disabled' : ''}>
+          ${added ? '✓' : '+1'}
+        </button>
       </div>
     `;
   }).join('');
+
+  grid.querySelectorAll('.stat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const k = btn.dataset.key;
+      const rec = getTodayRecord();
+      if (rec.added[k]) return;
+      state.stats[k] = Math.min(100, state.stats[k] + 1);
+      rec.added[k] = true;
+      saveState();
+      haptic(20);
+      renderStats();
+      renderHistory();
+      showToast(`${k}: +1 🐺`);
+    });
+  });
 }
 
 /* ===== ДЕНЬ ===== */
 function getTodayRecord() {
   const key = todayKey();
   if (!state.days[key]) {
-    state.days[key] = { added: false, rating: 0, quote: '', stats: { К:0,Н:0,П:0,Д:0,Ч:0 } };
+    state.days[key] = { added: {}, rating: 0, quote: '' };
   }
+  if (!state.days[key].added) state.days[key].added = {};
   return state.days[key];
 }
 
@@ -499,42 +524,13 @@ function renderToday() {
   const rec = getTodayRecord();
   document.getElementById('todayDate').textContent = todayRu();
 
-  const btn = document.getElementById('btnAdd');
-  if (rec.added) {
-    btn.disabled = true;
-    btn.textContent = '✓ СЕГОДНЯ УЖЕ ЗАПОЛНЕНО';
-  } else {
-    btn.disabled = false;
-    btn.textContent = '+1 КО ВСЕМ ПОКАЗАТЕЛЯМ ЗА ДЕНЬ';
-  }
-
-  // rating
   document.querySelectorAll('#rating .star').forEach(el => {
     el.classList.toggle('active', Number(el.dataset.v) === rec.rating);
   });
 
-  // quote
   const qi = document.getElementById('quoteInput');
   if (qi.value !== rec.quote) qi.value = rec.quote;
 }
-
-/* ===== ДОБАВИТЬ ДЕНЬ ===== */
-document.getElementById('btnAdd').addEventListener('click', () => {
-  const rec = getTodayRecord();
-  if (rec.added) return;
-
-  KEYS.forEach(k => {
-    state.stats[k] = Math.min(100, state.stats[k] + 1);
-    rec.stats[k] = 1;
-  });
-  rec.added = true;
-
-  saveState();
-  renderStats();
-  renderToday();
-  renderHistory();
-  showToast('+1 ко всем показателям! 🐺');
-});
 
 /* ===== ОЦЕНКА ===== */
 document.getElementById('rating').addEventListener('click', (e) => {
@@ -544,6 +540,7 @@ document.getElementById('rating').addEventListener('click', (e) => {
   const v = Number(star.dataset.v);
   rec.rating = rec.rating === v ? 0 : v;
   saveState();
+  haptic(15);
   renderToday();
   renderHistory();
 });
@@ -565,7 +562,10 @@ quoteInput.addEventListener('input', () => {
 function renderHistory() {
   const list = document.getElementById('historyList');
   const entries = Object.entries(state.days)
-    .filter(([_, r]) => r.added || r.rating || (r.quote && r.quote.trim()))
+    .filter(([_, r]) => {
+      const anyAdded = r.added && Object.values(r.added).some(Boolean);
+      return anyAdded || r.rating || (r.quote && r.quote.trim());
+    })
     .sort((a,b) => b[0].localeCompare(a[0]));
 
   if (!entries.length) {
@@ -577,7 +577,12 @@ function renderHistory() {
     const [y,m,d] = date.split('-');
     const nice = `${d}.${m}.${y}`;
     const stars = r.rating ? '⭐'.repeat(r.rating) : '—';
-    const stats = KEYS.map(k => `<span class="mini-stat">${k}:<b>${r.stats[k]||0}</b></span>`).join('');
+
+    const stats = KEYS.map(k => {
+      const add = r.added && r.added[k] ? '1' : '0';
+      return `<span class="mini-stat">${k}:<b>+${add}</b></span>`;
+    }).join('');
+
     const quote = r.quote && r.quote.trim()
       ? `<div class="day-card-quote">«${escapeHtml(r.quote.trim())}»</div>`
       : '';
@@ -605,8 +610,16 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1500);
 }
+
+/* ===== ЗАПРЕТ ДВОЙНОГО ТАПА (ЗУМ) ===== */
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (e) => {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) e.preventDefault();
+  lastTouchEnd = now;
+}, { passive: false });
 
 /* ===== ИНИТ ===== */
 updateCountdown();
