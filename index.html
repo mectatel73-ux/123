@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Волчий Гид — До 1 Мая</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0d0d12;
+    color: #e8e8f0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+  }
+  .app {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  /* ВОЛК */
+  .wolf {
+    width: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid #2a2a3a;
+    box-shadow: 0 0 40px rgba(120, 80, 255, 0.15);
+    margin-bottom: 16px;
+    background: #14141c;
+    position: relative;
+  }
+  .wolf svg { display: block; width: 100%; height: auto; }
+  .wolf-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px 14px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #b8a8ff;
+    font-weight: 600;
+  }
+
+  /* ОБРАТНЫЙ ОТСЧЁТ */
+  .countdown {
+    background: linear-gradient(135deg, #1a1a2e, #16162a);
+    border: 1px solid #2a2a45;
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .countdown-label {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #7a7a9a;
+    margin-bottom: 12px;
+  }
+  .countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  .time-block {
+    background: #0f0f1a;
+    border: 1px solid #2a2a45;
+    border-radius: 12px;
+    padding: 12px 8px;
+    min-width: 68px;
+  }
+  .time-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: #c4b5ff;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .time-txt {
+    font-size: 10px;
+    color: #6a6a8a;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 6px;
+  }
+  .countdown-date {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #8a8aaa;
+  }
+  .countdown-date b { color: #c4b5ff; }
+
+  /* ПАНЕЛЬ ДНЯ */
+  .today-panel {
+    background: #16162a;
+    border: 1px solid #2a2a45;
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .today-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .today-title { font-size: 14px; color: #9a9ab8; letter-spacing: 1px; text-transform: uppercase; }
+  .today-date { font-size: 13px; color: #6a6a8a; }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stat {
+    background: #0f0f1a;
+    border: 1px solid #2a2a45;
+    border-radius: 12px;
+    padding: 10px 4px;
+    text-align: center;
+  }
+  .stat-letter {
+    font-size: 18px;
+    font-weight: 800;
+    color: #c4b5ff;
+    margin-bottom: 4px;
+  }
+  .stat-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-max { font-size: 10px; color: #5a5a7a; }
+  .stat-dot {
+    width: 100%;
+    height: 4px;
+    background: #1f1f35;
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .stat-dot-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #7c5cff, #c4b5ff);
+    width: 0%;
+    transition: width 0.4s;
+  }
+
+  .btn-add {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #6d4aff, #9a7cff);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: 0.2s;
+  }
+  .btn-add:hover { filter: brightness(1.15); }
+  .btn-add:disabled {
+    background: #2a2a3f;
+    color: #5a5a7a;
+    cursor: not-allowed;
+  }
+
+  /* ОЦЕНКА И ЦИТАТА */
+  .row-block {
+    margin-top: 16px;
+  }
+  .row-label {
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #9a9ab8;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .rating {
+    display: flex;
+    gap: 8px;
+  }
+  .star {
+    flex: 1;
+    padding: 10px;
+    background: #0f0f1a;
+    border: 1px solid #2a2a45;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.2s;
+    user-select: none;
+  }
+  .star:hover { border-color: #7c5cff; }
+  .star.active {
+    background: linear-gradient(135deg, #6d4aff, #9a7cff);
+    border-color: #9a7cff;
+    transform: scale(1.05);
+  }
+  .quote-input {
+    width: 100%;
+    background: #0f0f1a;
+    border: 1px solid #2a2a45;
+    border-radius: 10px;
+    padding: 12px;
+    color: #e8e8f0;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+  }
+  .quote-input:focus { outline: none; border-color: #7c5cff; }
+  .quote-input::placeholder { color: #4a4a6a; }
+
+  /* ИСТОРИЯ */
+  .history {
+    margin-top: 16px;
+  }
+  .history-title {
+    font-size: 14px;
+    color: #9a9ab8;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .day-card {
+    background: #16162a;
+    border: 1px solid #2a2a45;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  .day-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .day-card-date { font-size: 13px; color: #c4b5ff; font-weight: 600; }
+  .day-card-rate { font-size: 14px; }
+  .day-card-stats {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .mini-stat {
+    font-size: 11px;
+    background: #0f0f1a;
+    border-radius: 6px;
+    padding: 3px 7px;
+    color: #9a9ab8;
+  }
+  .mini-stat b { color: #c4b5ff; }
+  .day-card-quote {
+    font-size: 12px;
+    color: #8a8aaa;
+    font-style: italic;
+    border-left: 2px solid #7c5cff;
+    padding-left: 8px;
+  }
+  .empty { text-align: center; color: #5a5a7a; font-size: 13px; padding: 20px; }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #6d4aff;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s;
+    z-index: 100;
+    box-shadow: 0 10px 30px rgba(109, 74, 255, 0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ЭБАЛО ВОЛКА -->
+  <div class="wolf">
+    <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="furGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3a3a52"/>
+          <stop offset="100%" stop-color="#1a1a28"/>
+        </linearGradient>
+        <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#1a1a2e"/>
+          <stop offset="100%" stop-color="#0d0d18"/>
+        </linearGradient>
+        <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffd45c"/>
+          <stop offset="60%" stop-color="#ff9f1c"/>
+          <stop offset="100%" stop-color="#c46a00"/>
+        </radialGradient>
+      </defs>
+      <rect width="400" height="300" fill="url(#bgGrad)"/>
+      <!-- Луна -->
+      <circle cx="320" cy="60" r="35" fill="#2a2a45" opacity="0.6"/>
+      <circle cx="310" cy="55" r="35" fill="#1a1a2e"/>
+
+      <!-- Уши -->
+      <polygon points="100,110 130,40 175,100" fill="#2a2a3f"/>
+      <polygon points="300,110 270,40 225,100" fill="#2a2a3f"/>
+      <polygon points="108,105 132,55 168,98" fill="#1f1f30"/>
+      <polygon points="292,105 268,55 232,98" fill="#1f1f30"/>
+      <polygon points="115,100 130,68 158,96" fill="#3a2a3a"/>
+      <polygon points="285,100 270,68 242,96" fill="#3a2a3a"/>
+
+      <!-- Голова -->
+      <ellipse cx="200" cy="160" rx="115" ry="105" fill="url(#furGrad)"/>
+      <!-- Мех на щеках -->
+      <path d="M90,150 Q75,175 95,200 Q85,180 105,190 Z" fill="#2a2a3f"/>
+      <path d="M310,150 Q325,175 305,200 Q315,180 295,190 Z" fill="#2a2a3f"/>
+
+      <!-- Морда (светлая часть) -->
+      <ellipse cx="200" cy="205" rx="70" ry="60" fill="#4a4a62"/>
+      <ellipse cx="200" cy="215" rx="55" ry="45" fill="#5a5a72"/>
+
+      <!-- Глаза -->
+      <ellipse cx="155" cy="150" rx="22" ry="18" fill="#0a0a10"/>
+      <ellipse cx="245" cy="150" rx="22" ry="18" fill="#0a0a10"/>
+      <ellipse cx="155" cy="150" rx="16" ry="13" fill="url(#eyeGlow)"/>
+      <ellipse cx="245" cy="150" rx="16" ry="13" fill="url(#eyeGlow)"/>
+      <ellipse cx="155" cy="150" rx="6" ry="11" fill="#0a0a10"/>
+      <ellipse cx="245" cy="150" rx="6" ry="11" fill="#0a0a10"/>
+      <circle cx="160" cy="145" r="3" fill="#fff" opacity="0.9"/>
+      <circle cx="250" cy="145" r="3" fill="#fff" opacity="0.9"/>
+
+      <!-- Брови -->
+      <path d="M125,125 Q155,115 185,128" stroke="#1a1a28" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <path d="M275,125 Q245,115 215,128" stroke="#1a1a28" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+      <!-- Нос -->
+      <ellipse cx="200" cy="200" rx="18" ry="13" fill="#0a0a10"/>
+      <ellipse cx="195" cy="197" rx="5" ry="3" fill="#3a3a52"/>
+      <ellipse cx="205" cy="197" rx="5" ry="3" fill="#3a3a52"/>
+
+      <!-- Рот / пасть -->
+      <path d="M200,213 L200,235" stroke="#0a0a10" stroke-width="3"/>
+      <path d="M200,235 Q180,250 165,240" stroke="#0a0a10" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M200,235 Q220,250 235,240" stroke="#0a0a10" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <!-- Клыки -->
+      <polygon points="175,238 180,255 185,238" fill="#f0f0f5"/>
+      <polygon points="215,238 220,255 225,238" fill="#f0f0f5"/>
+      <!-- Язык -->
+      <path d="M190,245 Q200,260 210,245 Q200,250 190,245 Z" fill="#c45c6a"/>
+
+      <!-- Шерсть на лбу -->
+      <path d="M185,95 Q200,85 215,95 Q205,100 200,92 Q195,100 185,95 Z" fill="#2a2a3f"/>
+    </svg>
+    <div class="wolf-caption">🐺 Волчий Гид</div>
+  </div>
+
+  <!-- ОБРАТНЫЙ ОТСЧЁТ -->
+  <div class="countdown">
+    <div class="countdown-label">До 1 мая осталось</div>
+    <div class="countdown-timer" id="timer">
+      <div class="time-block"><div class="time-num" id="cd-d">0</div><div class="time-txt">дней</div></div>
+      <div class="time-block"><div class="time-num" id="cd-h">0</div><div class="time-txt">часов</div></div>
+      <div class="time-block"><div class="time-num" id="cd-m">0</div><div class="time-txt">минут</div></div>
+      <div class="time-block"><div class="time-num" id="cd-s">0</div><div class="time-txt">секунд</div></div>
+    </div>
+    <div class="countdown-date">Цель: <b>1 мая</b></div>
+  </div>
+
+  <!-- ПАНЕЛЬ СЕГОДНЯШНЕГО ДНЯ -->
+  <div class="today-panel">
+    <div class="today-header">
+      <div class="today-title">Сегодня</div>
+      <div class="today-date" id="todayDate"></div>
+    </div>
+
+    <div class="stats-grid" id="statsGrid">
+      <!-- генерируется JS -->
+    </div>
+
+    <button class="btn-add" id="btnAdd">+1 КО ВСЕМ ПОКАЗАТЕЛЯМ ЗА ДЕНЬ</button>
+
+    <!-- ОЦЕНКА ДНЯ -->
+    <div class="row-block">
+      <div class="row-label">Оценка дня</div>
+      <div class="rating" id="rating">
+        <div class="star" data-v="1">😞</div>
+        <div class="star" data-v="2">😕</div>
+        <div class="star" data-v="3">😐</div>
+        <div class="star" data-v="4">🙂</div>
+        <div class="star" data-v="5">🤩</div>
+      </div>
+    </div>
+
+    <!-- ЦИТАТА ДНЯ -->
+    <div class="row-block">
+      <div class="row-label">Цитата дня</div>
+      <textarea class="quote-input" id="quoteInput" placeholder="Запиши мысль дня..."></textarea>
+    </div>
+  </div>
+
+  <!-- ИСТОРИЯ -->
+  <div class="history">
+    <div class="history-title">История дней</div>
+    <div id="historyList"><div class="empty">Пока пусто. Начни свой путь 🐺</div></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">Сохранено</div>
+
+<script>
+const KEYS = ['К', 'Н', 'П', 'Д', 'Ч'];
+const STORAGE = 'wolfGuide_v1';
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return {
+    stats: { К: 0, Н: 0, П: 0, Д: 0, Ч: 0 },
+    days: {}, // date -> { added: true, rating: 0, quote: '', stats: {...} }
+  };
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE, JSON.stringify(state));
+}
+
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function todayRu() {
+  const d = new Date();
+  return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+/* ===== ОБРАТНЫЙ ОТСЧЁТ ===== */
+function updateCountdown() {
+  const now = new Date();
+  let year = now.getFullYear();
+  let target = new Date(year, 4, 1); // 1 мая
+  if (now > target) target = new Date(year + 1, 4, 1);
+
+  const diff = target - now;
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+
+  document.getElementById('cd-d').textContent = d;
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+}
+
+/* ===== ПАНЕЛЬ ПОКАЗАТЕЛЕЙ ===== */
+function renderStats() {
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = KEYS.map(k => {
+    const v = state.stats[k];
+    const pct = v; // 0-100
+    return `
+      <div class="stat">
+        <div class="stat-letter">${k}</div>
+        <div class="stat-val">${v}<span class="stat-max">/100</span></div>
+        <div class="stat-dot"><div class="stat-dot-fill" style="width:${pct}%"></div></div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ===== ДЕНЬ ===== */
+function getTodayRecord() {
+  const key = todayKey();
+  if (!state.days[key]) {
+    state.days[key] = { added: false, rating: 0, quote: '', stats: { К:0,Н:0,П:0,Д:0,Ч:0 } };
+  }
+  return state.days[key];
+}
+
+function renderToday() {
+  const rec = getTodayRecord();
+  document.getElementById('todayDate').textContent = todayRu();
+
+  const btn = document.getElementById('btnAdd');
+  if (rec.added) {
+    btn.disabled = true;
+    btn.textContent = '✓ СЕГОДНЯ УЖЕ ЗАПОЛНЕНО';
+  } else {
+    btn.disabled = false;
+    btn.textContent = '+1 КО ВСЕМ ПОКАЗАТЕЛЯМ ЗА ДЕНЬ';
+  }
+
+  // rating
+  document.querySelectorAll('#rating .star').forEach(el => {
+    el.classList.toggle('active', Number(el.dataset.v) === rec.rating);
+  });
+
+  // quote
+  const qi = document.getElementById('quoteInput');
+  if (qi.value !== rec.quote) qi.value = rec.quote;
+}
+
+/* ===== ДОБАВИТЬ ДЕНЬ ===== */
+document.getElementById('btnAdd').addEventListener('click', () => {
+  const rec = getTodayRecord();
+  if (rec.added) return;
+
+  KEYS.forEach(k => {
+    state.stats[k] = Math.min(100, state.stats[k] + 1);
+    rec.stats[k] = 1;
+  });
+  rec.added = true;
+
+  saveState();
+  renderStats();
+  renderToday();
+  renderHistory();
+  showToast('+1 ко всем показателям! 🐺');
+});
+
+/* ===== ОЦЕНКА ===== */
+document.getElementById('rating').addEventListener('click', (e) => {
+  const star = e.target.closest('.star');
+  if (!star) return;
+  const rec = getTodayRecord();
+  const v = Number(star.dataset.v);
+  rec.rating = rec.rating === v ? 0 : v;
+  saveState();
+  renderToday();
+  renderHistory();
+});
+
+/* ===== ЦИТАТА ===== */
+const quoteInput = document.getElementById('quoteInput');
+let quoteTimer;
+quoteInput.addEventListener('input', () => {
+  clearTimeout(quoteTimer);
+  quoteTimer = setTimeout(() => {
+    const rec = getTodayRecord();
+    rec.quote = quoteInput.value;
+    saveState();
+    renderHistory();
+  }, 400);
+});
+
+/* ===== ИСТОРИЯ ===== */
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  const entries = Object.entries(state.days)
+    .filter(([_, r]) => r.added || r.rating || (r.quote && r.quote.trim()))
+    .sort((a,b) => b[0].localeCompare(a[0]));
+
+  if (!entries.length) {
+    list.innerHTML = '<div class="empty">Пока пусто. Начни свой путь 🐺</div>';
+    return;
+  }
+
+  list.innerHTML = entries.map(([date, r]) => {
+    const [y,m,d] = date.split('-');
+    const nice = `${d}.${m}.${y}`;
+    const stars = r.rating ? '⭐'.repeat(r.rating) : '—';
+    const stats = KEYS.map(k => `<span class="mini-stat">${k}:<b>${r.stats[k]||0}</b></span>`).join('');
+    const quote = r.quote && r.quote.trim()
+      ? `<div class="day-card-quote">«${escapeHtml(r.quote.trim())}»</div>`
+      : '';
+    return `
+      <div class="day-card">
+        <div class="day-card-head">
+          <div class="day-card-date">${nice}</div>
+          <div class="day-card-rate">${stars}</div>
+        </div>
+        <div class="day-card-stats">${stats}</div>
+        ${quote}
+      </div>
+    `;
+  }).join('');
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ===== ТОСТ ===== */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+/* ===== ИНИТ ===== */
+updateCountdown();
+setInterval(updateCountdown, 1000);
+renderStats();
+renderToday();
+renderHistory();
+</script>
+</body>
+</html>
